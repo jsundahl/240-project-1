@@ -32,7 +32,7 @@ def get_city_gen(file_names):
                 yield line
 
 
-def letter_pos(c):
+def pos(c):
     for i in range(0, 26):
         if c == chars[i]:
             return i
