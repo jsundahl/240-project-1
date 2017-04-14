@@ -66,6 +66,7 @@ def map_for_city(city, us_p, rus_p):
 
 
 def print_cities_maps(file_name):
-    print([(city, map_for_city(city, us_p, rus_p)) for city in get_city_gen(file_name)])
+    print('\n'.join(["{},{}".format(city, map_for_city(city, us_p, rus_p)) for city in get_city_gen(file_name)]))
 
+print_cities_maps("rus_50.txt")
 print_cities_maps("us_50.txt")
