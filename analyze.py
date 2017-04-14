@@ -25,11 +25,10 @@ us_p = probs[0]
 rus_p = probs[1]
 
 
-def get_city_gen(file_names):
-    for name in file_names:
-        with open(name, 'r') as f:
-            for line in f:
-                yield line
+def get_city_gen(file_name):
+    with open(file_name, 'r') as f:
+        for line in f:
+            yield line[0:-1]
 
 
 def pos(c):
@@ -44,22 +43,29 @@ def map_for_city(city, us_p, rus_p):
     """
     def get_char_probs_from(p_list):
         def get_prob_of_char(i):
-            if chars[i] in city:
+            if chars[i].upper() in city.upper():
                 return p_list[i]
             else:
                 return 1 - p_list[i]
         return get_prob_of_char
 
     def char_probs(p_list):
-        return map(get_char_probs_from(p_list), range(0, 27))
+        char_probs_list = list(map(get_char_probs_from(p_list), range(0, 26)))
+        x = reduce(lambda x, y: x * y, char_probs_list)
+        return x
 
     def get_MAP_idx(p_lists):
-        unmultiplied_probs_lists = map(char_probs, p_lists)
-        final_probs = [reduce(lambda x, y: x * y, list) for list in unmultiplied_probs_lists]
-        return final_probs.index(max(final_probs))
+        probs = list(map(char_probs, p_lists))
+        return probs.index(max(probs))
 
     MAP_idx = get_MAP_idx([us_p, rus_p])
     if MAP_idx == 0:
         return "US"
     else:
         return "Russia"
+
+
+def print_cities_maps(file_name):
+    print([(city, map_for_city(city, us_p, rus_p)) for city in get_city_gen(file_name)])
+
+print_cities_maps("us_50.txt")
