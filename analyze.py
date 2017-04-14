@@ -40,6 +40,26 @@ def pos(c):
 
 def map_for_city(city, us_p, rus_p):
     """
-    loop through each letter in this and add the probability it is and subtract the probability it isn't
+    loop through each letter in the alphabet and if its in the city's name multiply it by p(letter), else multiply by p(letter)^c
     """
-    pass
+    def get_char_probs_from(p_list):
+        def get_prob_of_char(i):
+            if chars[i] in city:
+                return p_list[i]
+            else:
+                return 1 - p_list[i]
+        return get_prob_of_char
+
+    def char_probs(p_list):
+        return map(get_char_probs_from(p_list), range(0, 27))
+
+    def get_MAP_idx(p_lists):
+        unmultiplied_probs_lists = map(char_probs, p_lists)
+        final_probs = [reduce(lambda x, y: x * y, list) for list in unmultiplied_probs_lists]
+        return final_probs.index(max(final_probs))
+
+    MAP_idx = get_MAP_idx([us_p, rus_p])
+    if MAP_idx == 0:
+        return "US"
+    else:
+        return "Russia"
